@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ActAuthLogout } from "../store/Auth/AuthSlice";
 import ButtonLoading from "./ButtonLoading";
 import { useTranslation } from "react-i18next";
+import { SlidersHorizontal } from "lucide-react";
 import { AlertTriangle } from "lucide-react";
 import Logo from '../assets/logo2.png'
 
@@ -78,7 +79,7 @@ const Header = () => {
             </button>
 
             {menuOpen && (
-              <div className="dropdown">
+              <div style={{right:i18n.language ==="ar" ?  "-7rem" : "0"}} className="dropdown">
                 <div onClick={()=>{nav('/profile')}} className="dropdown-item">
                   <User size={16} />
                   <span>{t("Profile")}</span>
@@ -93,14 +94,14 @@ const Header = () => {
                     )}
                   </span>
                 </div>
-                {user.role == "admin" ? (
+                {(user.role == "admin" || user.role == "member") ? (
                   <div
                     onClick={() => {
                       nav("/dashboard");
                     }}
                     className="dropdown-item"
                   >
-                    <LogOut size={16} />
+                    <SlidersHorizontal size={16} />
                     <span>{t("Dashboard")}</span>
                   </div>
                 ) : (

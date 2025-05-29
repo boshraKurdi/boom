@@ -24,17 +24,17 @@ export default function CampaignHome() {
       transition={{ duration: 0.8, ease: "easeOut" }}
     >
       <div className="big_title">
-        <h2 className="title">{t("Danger Map")}</h2>
-        <p className="subtitle">
+        <h2>{t("Awareness Campaigns")}</h2>
+        <p>
           {t(
-            "Explore areas with reported landmines and assess risk levels in different regions"
+            "Find and participate in upcoming mine awareness campaigns in your area."
           )}
         </p>
       </div>
       <div className="campaigns-grid">
         {loading != "pending" ? (
           campaigns?.map((campaign, id) => (
-            <CampaignCard key={id} {...campaign} />
+            <CampaignCard key={id} campaign={campaign} />
           ))
         ) : (
           <PageLoading />

@@ -10,10 +10,11 @@ import {
   ActIndex,
   ActStore,
   ActUpdate,
+  ActShow
 } from "../../../store/Dashboard/Compaigns/CompaignsSlice";
 import { ActIndex as ActIndexLoctions } from "../../../store/Dashboard/Locaions/LocationsSlice";
 import { ActIndex as ActIndexTeams } from "../../../store/Dashboard/Teams/TeamsSlice";
-import { ActIndex as ActIndexSteps } from "../../../store/Dashboard/Steps/StepsSlice";
+import { useTranslation } from "react-i18next";
 export default function Operation() {
   const dispatch = useDispatch();
 
@@ -21,28 +22,32 @@ export default function Operation() {
     dispatch(ActIndex());
     dispatch(ActIndexLoctions());
     dispatch(ActIndexTeams());
-    dispatch(ActIndexSteps());
   }, [dispatch]);
-
-  const { data, loading } = useSelector((state) => state.compaigns);
+ const { t } = useTranslation();
+  const { data, loading ,record } = useSelector((state) => state.compaigns);
   const { data: locationsData } = useSelector((state) => state.locations);
   const { data: teamsData } = useSelector((state) => state.teams);
-  const { data: stepsData } = useSelector((state) => state.steps);
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [selectedOperation, setSelectedOperation] = useState(null);
   const operationsData = data || [];
-
   const filteredOperations = operationsData?.filter(
     (operation) =>
       operation?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       operation?.id?.toString().includes(searchTerm.toLowerCase())
   );
 
-  const handleViewDetails = (operation) => {
-    setSelectedOperation(operation);
-    setIsDetailsOpen(true);
+  const handleViewDetails = (operationId) => {
+   dispatch(ActShow(operationId))
+    .unwrap()
+    .then(() => {
+      setSelectedOperation(record);
+      setIsDetailsOpen(true);
+    })
+    .catch(() => {
+      toast.error("فشل في تحميل تفاصيل العملية");
+    });
   };
 
   const handleAddOperation = (newOperation) => {
@@ -54,6 +59,7 @@ export default function Operation() {
       .catch(() => {
         toast.error(`add faild!`);
       });
+    // console.log(newOperation)
   };
   const handleUpdate = (id, data) => {
     dispatch(ActUpdate({ id, data }))
@@ -61,7 +67,8 @@ export default function Operation() {
       .then(() => {
         toast.success(`update successfuly!`);
       })
-      .catch(() => {
+      .catch((error) => {
+        console.log(error)
         toast.error(`update faild!`);
       });
   };
@@ -126,9 +133,9 @@ export default function Operation() {
 
   return (
     <div className="operations-container-dashboard">
-      <h2 className="operations-title-dashboard">Operations Management</h2>
+      <h2 className="operations-title-dashboard">{t("Operations Management")}</h2>
       <p className="operations-subtitle-dashboard">
-        Monitor and manage mine operations
+       {t(" Monitor and manage mine operations")}
       </p>
 
       <div className="operations-topbar-dashboard">
@@ -150,7 +157,7 @@ export default function Operation() {
           className="add-operation-btn-dashboard"
         >
           <Plus size={16} />
-          Add Operation
+          {t("Add Operation")}
         </button>
       </div>
 
@@ -169,7 +176,7 @@ export default function Operation() {
           <OperationRowDashboard
             key={op.id}
             i_0={op.id}
-            i_image={op?.media ?? op?.media[0]?.original_url}
+            i_image={op?.media && op?.media[0]?.original_url}
             i_1={op.name}
             // i_2={op.description}
             i_6={op.start_date}
@@ -180,7 +187,7 @@ export default function Operation() {
               setSelectedOperation(op); // تعديل
               setIsModalOpen(true);
             }}
-            handleViewDetails={() => handleViewDetails(op)}
+            handleViewDetails={() => handleViewDetails(op.id)}
           />
         ))}
       </div>
@@ -189,7 +196,7 @@ export default function Operation() {
         isOpen={isDetailsOpen}
         onClose={() => setIsDetailsOpen(false)}
         title={["name", "description", "end_date", "start_date", "article"]}
-        data={["location", "team", "step"]}
+        data={["location", "team", "steps"]}
         operation={selectedOperation}
       />
 
@@ -204,8 +211,9 @@ export default function Operation() {
         onSave={handleAddOperation}
         media={true}
         value={selectedOperation}
-        relationship_input={[{label:"steps" , input:["name" , 'description']}]}
-        input={["name", "description", "end_date", "start_date", "article"]}
+        relationship_input={[{label:"steps" , input_lang:["name" , 'description']}]}
+        input_date={["end_date", "start_date"]}
+        input_lang={["name", "description" , "article"]}
         select={[
           { label: "location_id", data: locationsData },
           { label: "team_id", data: teamsData },

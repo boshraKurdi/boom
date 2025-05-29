@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import i18next from "i18next";
 const ActStore = createAsyncThunk(
   "Reports/ActStore",
   async (data, thunkAPI) => {
@@ -12,6 +13,7 @@ const ActStore = createAsyncThunk(
         {
           headers: {
             Authorization: "Bearer " + auth.token,
+             "Accept-Language": i18next.language,
           },
         },
         {

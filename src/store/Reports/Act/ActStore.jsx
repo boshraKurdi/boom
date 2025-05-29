@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import i18next from "i18next";
 const ActStore = createAsyncThunk(
   "Reports/ActStore",
   async (data, thunkAPI) => {
@@ -7,11 +8,12 @@ const ActStore = createAsyncThunk(
     const { auth } = getState();
     try {
       const response = await axios.post(
-        `http://localhost:8000/api/admin/reports`,
+        `http://localhost:8000/api/reports`,
         data,
         {
           headers: {
             Authorization: "Bearer " + auth.token,
+              "Accept-Language": i18next.language,
           },
         },
         {
@@ -20,6 +22,7 @@ const ActStore = createAsyncThunk(
       );
       return response.data.report;
     } catch (error) {
+      console.log(error)
       if (axios.isAxiosError(error)) {
         return rejectWithValue(error.response?.data.message || error.message);
       } else {

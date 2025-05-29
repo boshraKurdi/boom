@@ -10,6 +10,7 @@ const ActDelete = createAsyncThunk(
         {
           headers: {
             Authorization: "Bearer " + auth.token,
+            
           },
         },
         {

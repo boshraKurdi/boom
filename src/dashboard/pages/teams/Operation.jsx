@@ -9,20 +9,27 @@ import {
   ActIndex,
   ActStore,
   ActUpdate,
+  ActShow,
 } from "../../../store/Dashboard/Teams/TeamsSlice";
 import { ActIndex as ActIndexTeampositions } from "../../../store/Dashboard/Teampositions/TeampositionsSlice";
+import { ActIndex as ActIndexUnits } from "../../../store/Dashboard/Units/UnitsSlice";
 import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 
 export default function Operation() {
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(ActIndex());
-     dispatch(ActIndexTeampositions());
+    dispatch(ActIndexTeampositions());
+    dispatch(ActIndexUnits());
   }, [dispatch]);
-
-  const { data, loading } = useSelector((state) => state.teams);
-  const { data: teampositionsData } = useSelector((state) => state.teampositions);
+  const { t } = useTranslation();
+  const { data, loading, record } = useSelector((state) => state.teams);
+  const { data: teampositionsData } = useSelector(
+    (state) => state.teampositions
+  );
+  const { data: unitsData } = useSelector((state) => state.units);
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
@@ -35,9 +42,16 @@ export default function Operation() {
       operation?.id?.toString().includes(searchTerm.toLowerCase())
   );
 
-  const handleViewDetails = (operation) => {
-    setSelectedOperation(operation);
-    setIsDetailsOpen(true);
+  const handleViewDetails = (operationId) => {
+    dispatch(ActShow(operationId))
+      .unwrap()
+      .then(() => {
+        setSelectedOperation(record);
+        setIsDetailsOpen(true);
+      })
+      .catch(() => {
+        toast.error("فشل في تحميل تفاصيل العملية");
+      });
   };
 
   const handleAddOperation = (newOperation) => {
@@ -50,13 +64,14 @@ export default function Operation() {
         toast.error(`add faild!`);
       });
   };
-  const handleUpdate = (id , data) => {
-    dispatch(ActUpdate({id , data}))
+  const handleUpdate = (id, data) => {
+    dispatch(ActUpdate({ id, data }))
       .unwrap()
       .then(() => {
         toast.success(`update successfuly!`);
       })
-      .catch(() => {
+      .catch((error) => {
+        console.log(error)
         toast.error(`update faild!`);
       });
   };
@@ -121,9 +136,11 @@ export default function Operation() {
 
   return (
     <div className="operations-container-dashboard">
-      <h2 className="operations-title-dashboard">Operations Management</h2>
+      <h2 className="operations-title-dashboard">
+        {t("Operations Management")}
+      </h2>
       <p className="operations-subtitle-dashboard">
-        Monitor and manage mine operations
+        {t("Monitor and manage mine operations")}
       </p>
 
       <div className="operations-topbar-dashboard">
@@ -145,7 +162,7 @@ export default function Operation() {
           className="add-operation-btn-dashboard"
         >
           <Plus size={16} />
-          Add Operation
+          {t("Add Operation")}
         </button>
       </div>
 
@@ -165,7 +182,7 @@ export default function Operation() {
             key={op.id}
             i_0={op.id}
             i_1={op.name}
-            i_8={op.status}
+            i_7={op.status}
             // i_3={op.compaigns_num}
             // i_4={op.areas_examined}
             i_5={op.level}
@@ -174,7 +191,7 @@ export default function Operation() {
               setSelectedOperation(op);
               setIsModalOpen(true);
             }}
-            handleViewDetails={() => handleViewDetails(op)}
+            handleViewDetails={() => handleViewDetails(op.id)}
           />
         ))}
       </div>
@@ -197,9 +214,10 @@ export default function Operation() {
         }}
         onSave={handleAddOperation}
         value={selectedOperation}
-        input={["name", "compaigns_num", "areas_examined", "status", "level"]}
+        input={["compaigns_num", "areas_examined", "status"]}
+        input_lang={["name", "level"]}
         select={[
-          { label: "unit_id", data: [] },
+          { label: "unit_id", data: unitsData },
           { label: "teamposition_id", data: teampositionsData },
         ]}
       />

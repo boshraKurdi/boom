@@ -12,6 +12,17 @@ import compaigns_app from './Compaigns/CompaignsSlice';
 import locations_app from './Locaions/LocationsSlice';
 import learns_app from './Learns/LearnsSlice';
 import teams_app from './Teams/TeamsSlice';
+import reports_app from './Reports/ReportsSlice';
+import users_app from './Users/UsersSlice';
+import organizations from './Dashboard/Organizations/OrganizationsSlice';
+import tools from './Dashboard/Tools/ToolsSlice';
+import tools_app from './Tools/ToolsSlice';
+import objectives from './Dashboard/Objectves/ObjectvesSlice';
+import units from './Dashboard/Units/UnitsSlice';
+import appointments from './Dashboard/Appointments/AppointmentsSlice';
+import donations from './Dashboard/Donations/DonationsSlice';
+import donations_app from './Donations/DonationsSlice';
+import users from './Dashboard/Users/UsersSlice';
 import {
   persistStore,
   persistReducer,
@@ -48,7 +59,18 @@ const rootReducer = combineReducers({
   compaigns_app ,
   locations_app ,
   learns_app , 
-  teams_app
+  teams_app ,
+  donations_app,
+  users_app ,
+  organizations ,
+  tools ,
+  objectives ,
+  units ,
+  tools_app,
+  appointments ,
+  donations ,
+  users ,
+  reports_app
 })
  const persistedReducer = persistReducer(rootPersistConfig, rootReducer);
 

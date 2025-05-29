@@ -9,8 +9,10 @@ import {
   ActIndex,
   ActStore,
   ActUpdate,
+  ActShow
 } from "../../../store/Dashboard/Locaions/LocationsSlice";
 import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 
 export default function Operation() {
   const dispatch = useDispatch();
@@ -18,7 +20,7 @@ export default function Operation() {
   useEffect(() => {
     dispatch(ActIndex());
   }, [dispatch]);
-
+ const { t } = useTranslation();
   const { data, loading } = useSelector((state) => state.locations);
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,10 +34,18 @@ export default function Operation() {
       operation?.id?.toString().includes(searchTerm.toLowerCase())
   );
 
-  const handleViewDetails = (operation) => {
-    setSelectedOperation(operation);
-    setIsDetailsOpen(true);
+  const handleViewDetails = (operationId) => {
+   dispatch(ActShow(operationId))
+    .unwrap()
+    .then((res) => {
+      setSelectedOperation(res);
+      setIsDetailsOpen(true);
+    })
+    .catch(() => {
+      toast.error("فشل في تحميل تفاصيل العملية");
+    });
   };
+
 
   const handleAddOperation = (newOperation) => {
     dispatch(ActStore(newOperation))
@@ -118,9 +128,9 @@ export default function Operation() {
 
   return (
     <div className="operations-container-dashboard">
-      <h2 className="operations-title-dashboard">Operations Management</h2>
+      <h2 className="operations-title-dashboard">{t("Operations Management")}</h2>
       <p className="operations-subtitle-dashboard">
-        Monitor and manage mine operations
+        {t("Monitor and manage mine operations")}
       </p>
 
       <div className="operations-topbar-dashboard">
@@ -142,7 +152,7 @@ export default function Operation() {
           className="add-operation-btn-dashboard"
         >
           <Plus size={16} />
-          Add Operation
+          {t("Add Operation")}
         </button>
       </div>
 
@@ -158,13 +168,13 @@ export default function Operation() {
             key={op.id}
             i_0={op.id}
             i_1={op.name}
-            i_8={op.status}
+            i_7={op.status}
             handleDelete={handleDelete}
             setIsModalOpen={() => {
               setSelectedOperation(op);
               setIsModalOpen(true);
             }}
-            handleViewDetails={() => handleViewDetails(op)}
+            handleViewDetails={() => handleViewDetails(op.id)}
           />
         ))}
       </div>
@@ -187,7 +197,8 @@ export default function Operation() {
         }}
         onSave={handleAddOperation}
         value={selectedOperation}
-        input={["name", "lat", "lon", "status"]}
+        input={["name" , "lat", "lon", "status"]}
+
       />
     </div>
   );

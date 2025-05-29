@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import i18next from "i18next";
 const ActDelete = createAsyncThunk(
     'Compaigns/ActDelete',
     async (id , thunkAPI) => {
@@ -10,6 +11,7 @@ const ActDelete = createAsyncThunk(
         {
           headers: {
             Authorization: "Bearer " + auth.token,
+             "Accept-Language": i18next.language,
           },
         },
         {

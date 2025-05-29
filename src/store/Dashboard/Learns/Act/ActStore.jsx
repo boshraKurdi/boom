@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import i18next from "i18next";
 const ActStore = createAsyncThunk(
   "Learns/ActStore",
   async (data, thunkAPI) => {
@@ -12,6 +13,7 @@ const ActStore = createAsyncThunk(
         {
           headers: {
             Authorization: "Bearer " + auth.token,
+            "Accept-Language": i18next.language,
           },
         },
         {
@@ -20,6 +22,7 @@ const ActStore = createAsyncThunk(
       );
       return response.data.learn;
     } catch (error) {
+      console.log(error)
       if (axios.isAxiosError(error)) {
         return rejectWithValue(error.response?.data.message || error.message);
       } else {

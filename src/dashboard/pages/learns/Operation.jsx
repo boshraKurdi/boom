@@ -9,8 +9,10 @@ import {
   ActIndex,
   ActStore,
   ActUpdate,
+  ActShow
 } from "../../../store/Dashboard/Learns/LearnsSlice";
 import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 
 export default function Operation() {
   const dispatch = useDispatch();
@@ -18,7 +20,7 @@ export default function Operation() {
   useEffect(() => {
     dispatch(ActIndex());
   }, [dispatch]);
-
+ const { t } = useTranslation();
   const { data, loading } = useSelector((state) => state.learns);
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,10 +34,18 @@ export default function Operation() {
       operation?.id?.toString().includes(searchTerm.toLowerCase())
   );
 
-  const handleViewDetails = (operation) => {
-    setSelectedOperation(operation);
-    setIsDetailsOpen(true);
+ const handleViewDetails = (operationId) => {
+   dispatch(ActShow(operationId))
+    .unwrap()
+    .then((res) => {
+      setSelectedOperation(res);
+      setIsDetailsOpen(true);
+    })
+    .catch(() => {
+      toast.error("فشل في تحميل تفاصيل العملية");
+    });
   };
+
 
   const handleAddOperation = (newOperation) => {
     dispatch(ActStore(newOperation))
@@ -118,9 +128,9 @@ export default function Operation() {
 
   return (
     <div className="operations-container-dashboard">
-      <h2 className="operations-title-dashboard">Operations Management</h2>
+      <h2 className="operations-title-dashboard">{t("Operations Management")}</h2>
       <p className="operations-subtitle-dashboard">
-        Monitor and manage mine operations
+        {t("Monitor and manage mine operations")}
       </p>
 
       <div className="operations-topbar-dashboard">
@@ -142,32 +152,29 @@ export default function Operation() {
           className="add-operation-btn-dashboard"
         >
           <Plus size={16} />
-          Add Operation
+          {t("Add Operation")}
         </button>
       </div>
 
       <div className="operations-table-dashboard">
         <div className="operations-header-dashboard">
           <span>ID</span>
-          <span>Name</span>
           <span>image</span>
-          <span>Objective</span>
+          <span>Name</span>
           <span>Actions</span>
         </div>
         {filteredOperations.map((op) => (
           <OperationRowDashboard
             key={op.id}
             i_0={op.id}
-            i_image={op?.media ?? op?.media[0]?.original_url}
+            i_image={op?.media[0]?.original_url}
             i_1={op.name}
-            i_2={op?.objective?.name}
-            // i_2={op.description}
             handleDelete={handleDelete}
             setIsModalOpen={() => {
               setSelectedOperation(op);
               setIsModalOpen(true);
             }}
-            handleViewDetails={() => handleViewDetails(op)}
+            handleViewDetails={() => handleViewDetails(op.id)}
           />
         ))}
       </div>
@@ -175,7 +182,7 @@ export default function Operation() {
       <OperationDetailsModal
         isOpen={isDetailsOpen}
         onClose={() => setIsDetailsOpen(false)}
-        title={["name", "description"]}
+        title={["name", "description" , 'type']}
         data={["objective"]}
         operation={selectedOperation}
       />
@@ -191,8 +198,11 @@ export default function Operation() {
         }}
         onSave={handleAddOperation}
         value={selectedOperation}
-        input={["name", "description"]}
-        select={[{ label: "objective_id", data: [] }]}
+        relationship_input={[{label:"objectives" , input_lang:["name"]}]}
+        input_lang={["name", "description", "type"]}
+        //  select={[
+        //   { label: "type", data: [{id:"article"}, {id:"video"}] },
+        // ]}
       />
     </div>
   );

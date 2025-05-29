@@ -1,7 +1,12 @@
 import React from "react";
 import { AlertTriangle } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next"; // مهم للوصول إلى اللغة الحالية
 
 const OperationDetailsModal = ({ isOpen, onClose, operation, title, data }) => {
+  const { t } = useTranslation();
+  const currentLang = i18n.language;
+
   if (!isOpen || !operation) return null;
 
   return (
@@ -14,7 +19,7 @@ const OperationDetailsModal = ({ isOpen, onClose, operation, title, data }) => {
               color="#dc2626"
               style={{ marginRight: "8px" }}
             />
-            Operation Details
+            {t("Operation Details")}
           </h2>
           <button className="modal-close-btn-dashboard" onClick={onClose}>
             ×
@@ -22,31 +27,53 @@ const OperationDetailsModal = ({ isOpen, onClose, operation, title, data }) => {
         </div>
 
         <div className="operation-details-grid-dashboard">
+          {/* عرض العناوين (title) */}
           {title?.map((d, index) => {
+            const value = operation?.[d];
             return (
               <div key={`title-${index}`}>
                 <label>{d}</label>
-                <div>{operation?.[d]}</div>
+                <div>
+                  {typeof value === "object" && value !== null
+                    ? value[currentLang] || value["en"] || JSON.stringify(value)
+                    : value}
+                </div>
               </div>
             );
           })}
 
-          {data?.map((d, index) => (
-            <div key={`data-${index}`}>
-              <label>{d}</label>
-              {Array.isArray(operation?.[d]) ? (
-                operation[d].map((dd, i) => (
-                  <div key={`item-${i}`}>{dd?.name ? dd?.name : dd?.id}</div>
-                ))
-              ) : (
-                <div>{operation?.[d]?.name || operation?.[d]?.id || "N/A"}</div>
-              )}
-            </div>
-          ))}
+          {/* عرض باقي البيانات (data) */}
+          {data?.map((d, index) => {
+            const value = operation?.[d];
+            return (
+              <div key={`data-${index}`}>
+                <label>{d}</label>
+                {Array.isArray(value) ? (
+                  value.map((item, i) => (
+                    <div key={`item-${i}`}>
+                      {item?.name
+                        ? typeof item.name === "object"
+                          ? item.name[currentLang] || item.name["en"]
+                          : item.name
+                        : item?.id}
+                    </div>
+                  ))
+                ) : (
+                  <div>
+                    {value?.name
+                      ? typeof value.name === "object"
+                        ? value.name[currentLang] || value.name["en"]
+                        : value.name
+                      : value?.id || "N/A"}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
 
         <div className="operation-notes-dashboard">
-          <label>Additional Notes</label>
+          <label>{t("Additional Notes")}</label>
           <p>{operation?.notes || "No notes available"}</p>
         </div>
       </div>

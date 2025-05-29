@@ -1,49 +1,55 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend
 } from 'recharts';
 import { ChevronDown } from 'lucide-react';
-
-const areaData = [
-  { week: 'Week 1', methane: 40, dust: 30, structural: 20 },
-  { week: 'Week 2', methane: 35, dust: 32, structural: 18 },
-  { week: 'Week 3', methane: 60, dust: 35, structural: 15 },
-  { week: 'Week 4', methane: 55, dust: 37, structural: 12 },
-  { week: 'Week 5', methane: 70, dust: 38, structural: 18 },
-  { week: 'Week 6', methane: 80, dust: 42, structural: 20 },
-  { week: 'Week 7', methane: 65, dust: 45, structural: 25 }
-];
-
-const pieData = [
-  { name: 'Gas Leaks', value: 40, color: '#f97316' },
-  { name: 'Structural Damage', value: 25, color: '#dc2626' },
-  { name: 'Methane Issues', value: 20, color: '#facc15' },
-  { name: 'Water Ingress', value: 15, color: '#0ea5e9' }
-];
+import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+import ActIndex from '../../store/Dashboard/Users/Act/ActIndex';
 
 export default function Statistic() {
+   const dispatch = useDispatch();
+  const { t } = useTranslation();
+  useEffect(() => {
+    dispatch(ActIndex());
+  }, [dispatch]);
+  const { data } = useSelector((state) => state.users);
+  
+const areaData = data?.reports_created_at_count.map((d) => ({
+  week: d.date,
+  methane: d.count,
+})) || [];
+
+const formattedPieData = ['#f97316' , '#dc2626', '#facc15' , '#0ea5e9' ]
+
+
+const pieData = data?.location_danger_created_at_count.map((d , index) => ({
+  name: d.date,
+  value: d.count,
+  color: formattedPieData[index],
+}));
   return (
     <div className="statistics-dashboard">
       <div className="statistics-dashboard-header">
         <div>
-          <h2>Statistics</h2>
-          <p className="subtitle-dashboard">Mine safety analytics and trends</p>
+          <h2>{t("Statistics")}</h2>
+          <p className="subtitle-dashboard">{t("Mine safety analytics and trend")}s</p>
         </div>
       </div>
 
       <div className="statistics-dashboard-filters">
-        <button className="active">Weekly</button>
-        <button>Monthly</button>
-        <button>Yearly</button>
+        <button className="active">{t("Weekly")}</button>
+        <button>{t("Monthly")}</button>
+        <button>{t("Yearly")}</button>
         <div className="statistics-dashboard-locations">
-          All Locations <ChevronDown size={16} />
+          {t("All Locations")} <ChevronDown size={16} />
         </div>
       </div>
 
       <div className="statistics-dashboard-charts">
         <div className="statistics-dashboard-card">
-          <h3>Danger Level Trends</h3>
+          <h3>{t("reports_created_at_count")}</h3>
           <ResponsiveContainer width="100%" height={250}>
             <AreaChart data={areaData}>
               <XAxis dataKey="week" />
@@ -62,7 +68,7 @@ export default function Statistic() {
         </div>
 
         <div className="statistics-dashboard-card">
-          <h3>Incident Distribution</h3>
+          <h3>{t("location_danger_created_at_count")}</h3>
           <ResponsiveContainer width="100%" height={250}>
             <PieChart>
               <Pie data={pieData} dataKey="value" nameKey="name" outerRadius={80}>
@@ -77,7 +83,7 @@ export default function Statistic() {
       </div>
 
       <div className="statistics-dashboard-metrics">
-        <h3>Safety Metrics Summary</h3>
+        <h3>{t("Safety Metrics Summary")}</h3>
         <div className='s-dashboard'>
         <div className="statistics-dashboard-metric">
           <p>Average Danger Level</p>

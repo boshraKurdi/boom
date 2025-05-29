@@ -162,7 +162,7 @@
 }
 
 .stat-card-dashboard .icon {
-  margin-right: 16px;
+  margin:0 10px;
   color: #555;
 }
 
@@ -710,10 +710,12 @@
 }
 /* Fields */
 .modal-field-dashboard {
-  display: flex;
-  width: 45%;
-  flex-direction: column;
-  margin-bottom: 16px;
+     display: flex
+;
+    width: 45%;
+    flex: 1;
+    flex-direction: column;
+    margin: 0 10px 15px 10px;
 }
 
 .modal-field-dashboard label {
@@ -817,4 +819,11 @@
   align-items: center;
   font-size: 18px;
   font-weight: bold;
+}
+.input_lang{
+      display: flex
+;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 100%;
 }

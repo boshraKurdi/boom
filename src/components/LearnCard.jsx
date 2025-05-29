@@ -6,7 +6,7 @@ const LearnCard = ({ resource }) => {
   const tags = ["Community", "Education", "Prevention"];
   return (
     <div className="resource-card">
-      <img src={resource.image} alt={resource.name} className="resource-img" />
+      <img src={resource?.media && resource.media[0]?.original_url} alt={resource.name} className="resource-img" />
       <div className="resource-content">
         <h3>{resource.name}</h3>
         <p>{resource.description}</p>

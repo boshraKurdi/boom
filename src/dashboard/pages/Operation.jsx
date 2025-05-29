@@ -1,8 +1,11 @@
-import { useState } from "react";
+import {  useState } from "react";
 import OperationRowDashboard from "../components/OperationRowDashboard";
 import { Plus, Search } from "lucide-react";
 import AddOperationModal from "../components/AddOperationModal";
 import OperationDetailsModal from "../components/OperationDetailsModal";
+
+import ActIndex from "../../store/Dashboard/Users/Act/ActIndex";
+import { useTranslation } from "react-i18next";
 
 export default function Operation() {
   const operationsData = [
@@ -49,6 +52,7 @@ export default function Operation() {
   
 const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 const [selectedOperation, setSelectedOperation] = useState(null);
+ const { t } = useTranslation();
 
 const handleViewDetails = (operation) => {
   setSelectedOperation(operation);
@@ -63,9 +67,9 @@ const handleViewDetails = (operation) => {
 
   return (
     <div className="operations-container-dashboard">
-      <h2 className="operations-title-dashboard">Operations Management</h2>
+      <h2 className="operations-title-dashboard">{t("Operations Management")}</h2>
       <p className="operations-subtitle-dashboard">
-        Monitor and manage mine operations
+        {t("Monitor and manage mine operations")}
       </p>
       <div className="operations-topbar-dashboard">
         <div className="operations-search-container-dashboard">

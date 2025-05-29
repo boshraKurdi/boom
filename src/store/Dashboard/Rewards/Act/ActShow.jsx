@@ -2,18 +2,18 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 const ActShow = createAsyncThunk(
     'Compaigns/ActShow',
-    async (data , thunkAPI) => {
+    async (id , thunkAPI) => {
         const { rejectWithValue , getState , signal} = thunkAPI;
         const { auth } = getState()
         try {
-            const response = await axios.post(`http://127.0.0.1:8000/api/auth/logout` , {
+            const response = await axios.get(`http://127.0.0.1:8000/api/admin/rewards/${id}` , {
                 signal: signal,
               }, {
                 headers: {
                   Authorization: 'Bearer ' + auth.token
               }
               });
-            return response.data   
+            return response.data.reward   
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 return rejectWithValue(error.response?.data.message || error.message);   

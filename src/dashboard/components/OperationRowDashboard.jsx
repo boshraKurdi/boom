@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { MoreVertical, Eye, Pencil, Trash2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function OperationRowDashboard({
   i_0,
@@ -11,11 +12,12 @@ export default function OperationRowDashboard({
   i_6,
   i_7,
   i_8,
-  i_image = "",
+  i_image = "b",
   setIsModalOpen,
   handleViewDetails,
   handleDelete,
 }) {
+    const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
   const statusColor = {
@@ -29,8 +31,8 @@ export default function OperationRowDashboard({
   return (
     <div className="operation-row-dashboard">
       <span>{i_0}</span>
-      {i_image ? <span>
-        <img src={`${i_image}`} alt="none" />
+      {i_image != "b" ? <span>
+        <img style={{width:"50px" , height:"50px" , borderRadius:"50%"}} src={`${i_image}`} alt="none" />
       </span> : ""}
       <span>{i_1}</span>
       {i_2 ? <span>{i_2}</span> : ""}
@@ -70,16 +72,17 @@ export default function OperationRowDashboard({
               className="dropdown-item-dashboard"
             >
               <Eye size={16} />
-              View Details
+              {t("View Details")}
             </div>
             <div
               onClick={() => {
+                handleViewDetails()
                 setIsModalOpen(true);
               }}
               className="dropdown-item-dashboard"
             >
               <Pencil size={16} />
-              Edit
+              {t("Edit")}
             </div>
             <div
               onClick={() => {
@@ -88,7 +91,7 @@ export default function OperationRowDashboard({
               className="dropdown-item-dashboard"
             >
               <Trash2 size={16} />
-              Delete
+              {t("Delete")}
             </div>
           </div>
         )}

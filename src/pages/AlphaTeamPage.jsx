@@ -4,6 +4,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { ActShow } from "../store/Teams/TeamsSlice";
 import { motion } from "framer-motion";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
+import i18next from "i18next";
 import { useTranslation } from "react-i18next";
 
 export default function AlphaTeamPage() {
@@ -25,19 +28,19 @@ export default function AlphaTeamPage() {
     >
       <div className="team-header">
         <h2>
-          <Shield /> {record?.name}
+          <Shield /> {i18next.language == "ar" ? record?.name.ar : record?.name.en}
         </h2>
         <div className="team-info-grid">
           <div>
             <h5>{t("Team Designation")}</h5>
             <p>
-              {record?.name} Unit <strong>#A-342</strong>
+              {i18next.language == "ar" ? record?.name.ar : record?.name.en} Unit <strong>#A-342</strong>
             </p>
           </div>
           <div>
             <h5>{t("Clearance Level")}</h5>
             <p>
-              <span className="clearance-level">Level {record?.level}</span>{" "}
+              <span className="clearance-level">Level {i18next.language == "ar" ? record?.level.ar : record?.level.en}</span>{" "}
               Advanced Technical Operations
             </p>
           </div>
@@ -106,14 +109,12 @@ export default function AlphaTeamPage() {
         <h3>{t("Reports and Assessments")}</h3>
         <div className="alpha-team-page__reports-grid">
           {record?.team_report?.length ? (
-            record.reports.map((report, index) => (
+            record.team_report.map((report, index) => (
               <div key={index} className="alpha-team-page__report-card">
-                <h4>{report.title}</h4>
+                <h4>{report.team_id}</h4>
                 <p>
-                  {t("Date")}: {report.date}
-                </p>
-                <p>
-                  {t("Summary")}: {report.summary}
+                  {t("Date")}:
+                    {format(report?.updated_at, "d MMMM", { locale: fr })} to{" "}
                 </p>
               </div>
             ))

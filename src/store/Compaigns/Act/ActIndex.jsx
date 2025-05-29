@@ -1,5 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import i18next from "i18next";
+
 const ActIndex = createAsyncThunk(
   "Compaigns/ActIndex",
   async (data, thunkAPI) => {
@@ -11,12 +13,12 @@ const ActIndex = createAsyncThunk(
         {
           headers: {
             Authorization: "Bearer " + auth.token,
+               "Accept-Language": i18next.language, 
           },
         },
         {
           signal: signal,
-        }
-      );
+        });
       return response.data.compaigns;
     } catch (error) {
       if (axios.isAxiosError(error)) {

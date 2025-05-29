@@ -4,25 +4,36 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import LoadingScreen from "../components/LoadingScreen";
 import RequierBack from "../auth/RequierBack";
-
+import RequierAuthPanel from "../auth/RequierAuthPanel";
+import NotFound404 from "../components/NotFound404";
 
 const Home = lazy(() => import("../pages/Home")),
   Main = lazy(() => import("../dashboard/pages/Main")),
+  Main_app = lazy(() => import("../pages/Main")),
   Campaigns = lazy(() => import("../pages/CampaignsPage")),
   Home_dashboard = lazy(() => import("../dashboard/pages/Home")),
   Compaigns = lazy(() => import("../dashboard/pages/compaigns/Operation")),
-   Locations = lazy(() => import("../dashboard/pages/locations/Operation")),
-    Rewards = lazy(() => import("../dashboard/pages/rewards/Operation")),
+  Locations = lazy(() => import("../dashboard/pages/locations/Operation")),
+  Rewards = lazy(() => import("../dashboard/pages/rewards/Operation")),
   Statistic = lazy(() => import("../dashboard/pages/Statistic")),
   Education = lazy(() => import("../pages/EducationPage")),
   Report = lazy(() => import("../pages/ReportMinePage")),
-  Profile = lazy(() => import("../pages/Profile")) ,
-  DonateEquipment = lazy(() => import("../pages/DonateEquipment")) ,
+  Profile = lazy(() => import("../pages/Profile")),
+  DonateEquipment = lazy(() => import("../pages/DonateEquipment")),
   Report_dashboard = lazy(() => import("../dashboard/pages/reports/Operation")),
   Learns = lazy(() => import("../dashboard/pages/learns/Operation")),
+  Units = lazy(() => import("../dashboard/pages/units/Operation")),
+  Tools = lazy(() => import("../dashboard/pages/tools/Operation")),
+  Donations = lazy(() => import("../dashboard/pages/donations/Operation")),
   Steps = lazy(() => import("../dashboard/pages/steps/Operation")),
-  Teampositions = lazy(() => import("../dashboard/pages/teampositions/Operation")),
+  Appointments = lazy(() =>
+    import("../dashboard/pages/appointments/Operation")
+  ),
+  Teampositions = lazy(() =>
+    import("../dashboard/pages/teampositions/Operation")
+  ),
   Teams = lazy(() => import("../dashboard/pages/teams/Operation")),
+  Memder = lazy(() => import("../dashboard/pages/memder/Operation")),
   Team = lazy(() => import("../pages/TeamManagement")),
   Register = lazy(() => import("../pages/RegisterForm")),
   CampaignDetails = lazy(() => import("../pages/CampaignDetails")),
@@ -32,184 +43,167 @@ const Home = lazy(() => import("../pages/Home")),
   Interactive = lazy(() => import("../pages/InteractiveMapPage"));
 const router = createBrowserRouter([
   {
+    path: "/",
     element: (
       <Suspense fallback={<LoadingScreen />}>
-        <RequierBack />
+        <Main_app />
       </Suspense>
     ),
+    errorElement: <NotFound404 />,
     children: [
       {
-        path: "/Register",
+        element: (
+          <Suspense fallback={<LoadingScreen />}>
+            <RequierBack />
+          </Suspense>
+        ),
+        children: [
+          {
+            path: "/Register",
+            element: (
+              <>
+                <Suspense fallback={<LoadingScreen />}>
+                  <Register />
+                </Suspense>
+              </>
+            ),
+          },
+          {
+            path: "/Login",
+            element: (
+              <>
+                <Suspense fallback={<LoadingScreen />}>
+                  <Login />
+                </Suspense>
+              </>
+            ),
+          },
+        ],
+      },
+
+      {
+        path: "/",
+
         element: (
           <>
-            <Header />
             <Suspense fallback={<LoadingScreen />}>
-              <Register />
+              <Home />
             </Suspense>
-            <Footer />
           </>
         ),
       },
       {
-        path: "/Login",
+        path: "/Campaigns",
         element: (
           <>
-            <Header />
             <Suspense fallback={<LoadingScreen />}>
-              <Login />
+              <Campaigns />
             </Suspense>
-            <Footer />
+          </>
+        ),
+      },
+      {
+        path: "/Education",
+        element: (
+          <>
+            <Suspense fallback={<LoadingScreen />}>
+              <Education />
+            </Suspense>
+          </>
+        ),
+      },
+      {
+        path: "/Report",
+        element: (
+          <>
+            <Suspense fallback={<LoadingScreen />}>
+              <Report />
+            </Suspense>
+          </>
+        ),
+      },
+      {
+        path: "/Team",
+        element: (
+          <>
+            <Suspense fallback={<LoadingScreen />}>
+              <Team />
+            </Suspense>
+          </>
+        ),
+      },
+      {
+        path: "/Interactive/:search",
+        element: (
+          <>
+            <Suspense fallback={<LoadingScreen />}>
+              <Interactive />
+            </Suspense>
+          </>
+        ),
+      },
+      {
+        path: "/Interactive",
+        element: (
+          <>
+            <Suspense fallback={"loading..."}>
+              <Interactive />
+            </Suspense>
+          </>
+        ),
+      },
+      {
+        path: "/CampaignDetails/:id",
+        element: (
+          <>
+            <Suspense fallback={"loading..."}>
+              <CampaignDetails />
+            </Suspense>
+          </>
+        ),
+      },
+      {
+        path: "/TeamDetails/:id",
+        element: (
+          <>
+            <Suspense fallback={"loading..."}>
+              <AlphaTeamPage />
+            </Suspense>
+          </>
+        ),
+      },
+      {
+        path: "/TrainingArticlePage/:id",
+        element: (
+          <>
+            <Suspense fallback={<LoadingScreen />}>
+              <TrainingArticlePage />
+            </Suspense>
+          </>
+        ),
+      },
+      {
+        path: "profile",
+        element: (
+          <>
+            <Suspense fallback={<LoadingScreen />}>
+              <Profile />
+            </Suspense>
+          </>
+        ),
+      },
+      {
+        path: "donate",
+        element: (
+          <>
+            <Suspense fallback={<LoadingScreen />}>
+              <DonateEquipment />
+            </Suspense>
           </>
         ),
       },
     ],
   },
-
-  {
-    path: "/",
-    element: (
-      <>
-        <Header />
-        <Suspense fallback={<LoadingScreen />}>
-          <Home />
-        </Suspense>
-        <Footer />
-      </>
-    ),
-  },
-  {
-    path: "/Campaigns",
-    element: (
-      <>
-        <Header />
-        <Suspense fallback={<LoadingScreen />}>
-          <Campaigns />
-        </Suspense>
-        <Footer />
-      </>
-    ),
-  },
-  {
-    path: "/Education",
-    element: (
-      <>
-        <Header />
-        <Suspense fallback={<LoadingScreen />}>
-          <Education />
-        </Suspense>
-        <Footer />
-      </>
-    ),
-  },
-  {
-    path: "/Report",
-    element: (
-      <>
-        <Header />
-        <Suspense fallback={<LoadingScreen />}>
-          <Report />
-        </Suspense>
-        <Footer />
-      </>
-    ),
-  },
-  {
-    path: "/Team",
-    element: (
-      <>
-        <Header />
-        <Suspense fallback={<LoadingScreen />}>
-          <Team />
-        </Suspense>
-        <Footer />
-      </>
-    ),
-  },
-  {
-    path: "/Interactive/:search",
-    element: (
-      <>
-        <Header />
-        <Suspense fallback={<LoadingScreen />}>
-          <Interactive />
-        </Suspense>
-
-        <Footer />
-      </>
-    ),
-  },
-  {
-    path: "/Interactive",
-    element: (
-      <>
-        <Header />
-        <Suspense fallback={"loading..."}>
-          <Interactive />
-        </Suspense>
-        <Footer />
-      </>
-    ),
-  },
-  {
-    path: "/CampaignDetails/:id",
-    element: (
-      <>
-        <Header />
-        <Suspense fallback={"loading..."}>
-          <CampaignDetails />
-        </Suspense>
-        <Footer />
-      </>
-    ),
-  },
-  {
-    path: "/TeamDetails/:id",
-    element: (
-      <>
-        <Header />
-        <Suspense fallback={"loading..."}>
-          <AlphaTeamPage />
-        </Suspense>
-        <Footer />
-      </>
-    ),
-  },
-  {
-    path: "/TrainingArticlePage/:id",
-    element: (
-      <>
-        <Header />
-        <Suspense fallback={<LoadingScreen />}>
-          <TrainingArticlePage />
-        </Suspense>
-        <Footer />
-      </>
-    ),
-  },
-        {
-        path: "profile",
-        element: (
-          <>
-           <Header />
-          <Suspense fallback={<LoadingScreen />}>
-            <Profile />
-          </Suspense>
-           <Footer />
-          </>
-        ),
-      },
-       {
-        path: "donate",
-        element: (
-          <>
-           <Header />
-          <Suspense fallback={<LoadingScreen />}>
-            <DonateEquipment />
-          </Suspense>
-           <Footer />
-          </>
-        ),
-      },
   // dashboard
   {
     path: "/dashboard",
@@ -219,88 +213,143 @@ const router = createBrowserRouter([
       </Suspense>
     ),
     children: [
-      {
-        index: true,
-        element: (
-          <Suspense fallback={<LoadingScreen />}>
-            <Home_dashboard />
-          </Suspense>
-        ),
-      },
+       {
+        element: <RequierAuthPanel allowedRole={["admin" , 'member']} />,
+        children: [
+ {
+            index: true,
+            element: (
+              <Suspense fallback={<LoadingScreen />}>
+                <Home_dashboard />
+              </Suspense>
+            ),
+          },
 
+          {
+            path: "Statistic",
+            element: (
+              <Suspense fallback={<LoadingScreen />}>
+                <Statistic />
+              </Suspense>
+            ),
+          },
+        ]
+      },
       {
-        path: "Statistic",
-        element: (
-          <Suspense fallback={<LoadingScreen />}>
-            <Statistic />
-          </Suspense>
-        ),
+        element: <RequierAuthPanel allowedRole={["admin"]} />,
+        children: [
+         
+          {
+            path: "compaigns",
+            element: (
+              <Suspense fallback={<LoadingScreen />}>
+                <Compaigns />
+              </Suspense>
+            ),
+          },
+          {
+            path: "locations",
+            element: (
+              <Suspense fallback={<LoadingScreen />}>
+                <Locations />
+              </Suspense>
+            ),
+          },
+          {
+            path: "rewards",
+            element: (
+              <Suspense fallback={<LoadingScreen />}>
+                <Rewards />
+              </Suspense>
+            ),
+          },
+          {
+            path: "teams",
+            element: (
+              <Suspense fallback={<LoadingScreen />}>
+                <Teams />
+              </Suspense>
+            ),
+          },
+          {
+            path: "steps",
+            element: (
+              <Suspense fallback={<LoadingScreen />}>
+                <Steps />
+              </Suspense>
+            ),
+          },
+          {
+            path: "teampositions",
+            element: (
+              <Suspense fallback={<LoadingScreen />}>
+                <Teampositions />
+              </Suspense>
+            ),
+          },
+          {
+            path: "report",
+            element: (
+              <Suspense fallback={<LoadingScreen />}>
+                <Report_dashboard />
+              </Suspense>
+            ),
+          },
+          {
+            path: "learn",
+            element: (
+              <Suspense fallback={<LoadingScreen />}>
+                <Learns />
+              </Suspense>
+            ),
+          },
+          {
+            path: "unit",
+            element: (
+              <Suspense fallback={<LoadingScreen />}>
+                <Units />
+              </Suspense>
+            ),
+          },
+          {
+            path: "donation",
+            element: (
+              <Suspense fallback={<LoadingScreen />}>
+                <Donations />
+              </Suspense>
+            ),
+          },
+          {
+            path: "appointments",
+            element: (
+              <Suspense fallback={<LoadingScreen />}>
+                <Appointments />
+              </Suspense>
+            ),
+          },
+          {
+            path: "tools",
+            element: (
+              <Suspense fallback={<LoadingScreen />}>
+                <Tools />
+              </Suspense>
+            ),
+          },
+        ],
       },
-        {
-        path: "compaigns",
-        element: (
-          <Suspense fallback={<LoadingScreen />}>
-            <Compaigns />
-          </Suspense>
-        ),
+      {
+        element: <RequierAuthPanel allowedRole={["member"]} />,
+        children: [
+          {
+            path: "member",
+            element: (
+              <Suspense fallback={<LoadingScreen />}>
+                <Memder />
+              </Suspense>
+            ),
+          },
+        ],
       },
-       {
-        path: "locations",
-        element: (
-          <Suspense fallback={<LoadingScreen />}>
-            <Locations />
-          </Suspense>
-        ),
-      },
-       {
-        path: "rewards",
-        element: (
-          <Suspense fallback={<LoadingScreen />}>
-            <Rewards />
-          </Suspense>
-        ),
-      },
-       {
-        path: "teams",
-        element: (
-          <Suspense fallback={<LoadingScreen />}>
-            <Teams />
-          </Suspense>
-        ),
-      },
-       {
-        path: "steps",
-        element: (
-          <Suspense fallback={<LoadingScreen />}>
-            <Steps />
-          </Suspense>
-        ),
-      },
-       {
-        path: "teampositions",
-        element: (
-          <Suspense fallback={<LoadingScreen />}>
-            <Teampositions />
-          </Suspense>
-        ),
-      },
-             {
-        path: "report",
-        element: (
-          <Suspense fallback={<LoadingScreen />}>
-            <Report_dashboard />
-          </Suspense>
-        ),
-      },
-             {
-        path: "learn",
-        element: (
-          <Suspense fallback={<LoadingScreen />}>
-            <Learns />
-          </Suspense>
-        ),
-      },
-      
     ],
   },
 ]);

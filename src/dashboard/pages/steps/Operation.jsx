@@ -9,6 +9,7 @@ import {
   ActIndex,
   ActStore,
   ActUpdate,
+  ActShow
 } from "../../../store/Dashboard/Steps/StepsSlice";
 import toast from "react-hot-toast";
 
@@ -32,10 +33,18 @@ export default function Operation() {
       operation?.id?.toString().includes(searchTerm.toLowerCase())
   );
 
-  const handleViewDetails = (operation) => {
-    setSelectedOperation(operation);
-    setIsDetailsOpen(true);
+ const handleViewDetails = (operationId) => {
+   dispatch(ActShow(operationId))
+    .unwrap()
+    .then((res) => {
+      setSelectedOperation(res);
+      setIsDetailsOpen(true);
+    })
+    .catch(() => {
+      toast.error("فشل في تحميل تفاصيل العملية");
+    });
   };
+
 
   const handleAddOperation = (newOperation) => {
     dispatch(ActStore(newOperation))
@@ -163,7 +172,7 @@ export default function Operation() {
               setSelectedOperation(op);
               setIsModalOpen(true);
             }}
-            handleViewDetails={() => handleViewDetails(op)}
+            handleViewDetails={() => handleViewDetails(op.id)}
           />
         ))}
       </div>

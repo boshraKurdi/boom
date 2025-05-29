@@ -4,20 +4,27 @@ import { Plus, Search } from "lucide-react";
 import AddOperationModal from "../../components/AddOperationModal";
 import OperationDetailsModal from "../../components/OperationDetailsModal";
 import { useDispatch, useSelector } from "react-redux";
-import { ActDelete, ActIndex, ActStore, ActUpdate } from "../../../store/Dashboard/Rewards/RewardsSlice";
+import {
+  ActDelete,
+  ActIndex,
+  ActStore,
+  ActUpdate,
+  ActShow
+} from "../../../store/Dashboard/Rewards/RewardsSlice";
 import { ActIndex as ActIndexReports } from "../../../store/Dashboard/Reports/ReportsSlice";
 import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 
 export default function Operation() {
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(ActIndex());
-     dispatch(ActIndexReports());
+    dispatch(ActIndexReports());
   }, [dispatch]);
-
-  const { data , loading } = useSelector((state) => state.rewards);
-    const { data: reportsData } = useSelector((state) => state.reports);
+  const { t } = useTranslation();
+  const { data, loading } = useSelector((state) => state.rewards);
+  const { data: reportsData } = useSelector((state) => state.reports);
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
@@ -30,20 +37,31 @@ export default function Operation() {
       operation?.id?.toString().includes(searchTerm.toLowerCase())
   );
 
-  const handleViewDetails = (operation) => {
-    setSelectedOperation(operation);
-    setIsDetailsOpen(true);
+  const handleViewDetails = (operationId) => {
+   dispatch(ActShow(operationId))
+    .unwrap()
+    .then((res) => {
+      setSelectedOperation(res);
+      setIsDetailsOpen(true);
+    })
+    .catch(() => {
+      toast.error("فشل في تحميل تفاصيل العملية");
+    });
   };
 
+
   const handleAddOperation = (newOperation) => {
-    dispatch(ActStore(newOperation)).unwrap().then(()=>{
-       toast.success(`add successfuly!`);
-    }).catch(()=>{
-      toast.error(`add faild!`);
-    })
+    dispatch(ActStore(newOperation))
+      .unwrap()
+      .then(() => {
+        toast.success(`add successfuly!`);
+      })
+      .catch(() => {
+        toast.error(`add faild!`);
+      });
   };
-const handleUpdate = (id , data) => {
-    dispatch(ActUpdate({id , data}))
+  const handleUpdate = (id, data) => {
+    dispatch(ActUpdate({ id, data }))
       .unwrap()
       .then(() => {
         toast.success(`update successfuly!`);
@@ -113,9 +131,11 @@ const handleUpdate = (id , data) => {
 
   return (
     <div className="operations-container-dashboard">
-      <h2 className="operations-title-dashboard">Operations Management</h2>
+      <h2 className="operations-title-dashboard">
+        {t("Operations Management")}
+      </h2>
       <p className="operations-subtitle-dashboard">
-        Monitor and manage mine operations
+        {t("Monitor and manage mine operations")}
       </p>
 
       <div className="operations-topbar-dashboard">
@@ -137,7 +157,7 @@ const handleUpdate = (id , data) => {
           className="add-operation-btn-dashboard"
         >
           <Plus size={16} />
-          Add Operation
+          {t("Add Operation")}
         </button>
       </div>
 
@@ -146,7 +166,7 @@ const handleUpdate = (id , data) => {
           <span>ID</span>
           <span>report</span>
           <span>Point</span>
-            <span>Actions</span>
+          <span>Actions</span>
         </div>
         {filteredOperations.map((op) => (
           <OperationRowDashboard
@@ -154,12 +174,12 @@ const handleUpdate = (id , data) => {
             i_0={op.id}
             i_1={op?.report?.id}
             i_2={op.point}
-             handleDelete={handleDelete}
+            handleDelete={handleDelete}
             setIsModalOpen={() => {
               setSelectedOperation(op);
               setIsModalOpen(true);
             }}
-            handleViewDetails={() => handleViewDetails(op)}
+            handleViewDetails={() => handleViewDetails(op.id)}
           />
         ))}
       </div>
@@ -175,14 +195,15 @@ const handleUpdate = (id , data) => {
       <AddOperationModal
         isOpen={isModalOpen}
         loading={loading}
-          handleUpdate={handleUpdate}
+        handleUpdate={handleUpdate}
         onClose={() => {
           setIsModalOpen(false);
           setSelectedOperation(null);
         }}
         onSave={handleAddOperation}
         value={selectedOperation}
-        input={["description", "point"]}
+        input={["point"]}
+        input_lang={["description"]}
         select={[{ label: "report_id", data: reportsData }]}
       />
     </div>

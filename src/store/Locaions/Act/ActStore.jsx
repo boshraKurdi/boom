@@ -2,13 +2,13 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 const ActStore = createAsyncThunk(
   "Locations/ActStore",
-  async (data, thunkAPI) => {
+  async (fullData, thunkAPI) => {
     const { rejectWithValue, getState, signal } = thunkAPI;
     const { auth } = getState();
     try {
       const response = await axios.post(
         `http://localhost:8000/api/admin/locations`,
-        data,
+        fullData,
         {
           headers: {
             Authorization: "Bearer " + auth.token,

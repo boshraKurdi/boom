@@ -112,7 +112,7 @@ const CampaignsPage = () => {
               visibleCampaigns.length > 0 ? (
                 <>
                   {visibleCampaigns.map((campaign, id) => (
-                    <CampaignCard key={id} {...campaign} />
+                    <CampaignCard key={id} campaign={campaign} />
                   ))}
                 </>
               ) : (

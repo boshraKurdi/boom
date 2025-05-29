@@ -75,12 +75,12 @@ export const reportsSlice = createSlice({
     });
     builder.addCase(ActUpdate.fulfilled, (state, action) => {
       state.loading = "succeeded";
-      const index = state.data.findIndex((el) => el.id === action.payload.id);
-      if (index !== -1) {
-        state.data[index] = action.payload;
-      } else {
-        state.data.push(action.payload);
-      }
+      // const index = state.data.findIndex((el) => el.id === action.payload.id);
+      // if (index !== -1) {
+      //   state.data[index] = action.payload;
+      // } else {
+      //   state.data.push(action.payload);
+      // }
     });
     builder.addCase(ActUpdate.rejected, (state, action) => {
       state.loading = "failed";

@@ -58,9 +58,8 @@ export const locationsSlice = createSlice({
       state.loading = "pending";
       state.error = null;
     });
-    builder.addCase(ActStore.fulfilled, (state, action) => {
+    builder.addCase(ActStore.fulfilled, (state) => {
       state.loading = "succeeded";
-      state.data.push(action.payload);
     });
     builder.addCase(ActStore.rejected, (state, action) => {
       state.loading = "failed";

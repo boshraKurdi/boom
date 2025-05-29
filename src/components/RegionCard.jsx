@@ -8,8 +8,8 @@ const RegionCard = ({ region, risk, teams, responseTime, incidents, theme }) => 
       <div className="region-header">
         <h3> <AlertTriangle/>{region}</h3>
         <p className="risk-level">
-          {risk === 'high' && 'High-risk area with active reports'}
-          {risk === 'medium' && 'Medium-risk area with monitoring'}
+          {risk === 'danger' && 'High-risk area with active reports'}
+          {risk === 'warning' && 'Medium-risk area with monitoring'}
           {risk === 'safe' && 'Low-risk area with regular patrols'}
         </p>
       </div>

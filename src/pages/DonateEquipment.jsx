@@ -1,23 +1,36 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import Lottie from "lottie-react";
 import donateAnimation from "../lottiefiles/alarm.json";
 import { ShieldAlert, Handshake, HelpCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
-
+import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { ActStore } from "../store/Donations/DonationsSlice";
+import { ActIndex } from "../store/Dashboard/Tools/ToolsSlice";
+import ButtonLoading from "../components/ButtonLoading";
 const DonateEquipment = () => {
   const { t } = useTranslation();
+ const dispatch = useDispatch()
   const { register, handleSubmit, reset } = useForm();
 
   const onSubmit = (data) => {
-    console.log("Donation Data:", data);
-    alert(
-      "Your donation has been submitted successfully! Thank you for your contribution."
-    );
+
+    dispatch(ActStore(data)).unwrap()
+      .then(() => {
+        toast.success(`send Donation successfuly!`);
+      })
+      .catch(() => {
+        toast.error(`send Donation faild!`);
+      });
     reset();
   };
-
+  useEffect(() => {
+    dispatch(ActIndex());
+  }, [dispatch]);
+    const { data:toolsData } = useSelector((state) => state.tools);
+    const { loading } = useSelector((state) => state.donations_app);
   return (
     <div className="donate-page padding_page">
       <motion.div
@@ -83,47 +96,21 @@ const DonateEquipment = () => {
             </div>
             <form className="donate-form" onSubmit={handleSubmit(onSubmit)}>
               <div className="form-row">
+                <select {...register("tool_id")} name="" id="">
+                  {toolsData?.map((tool) => {
+                    return <option value={tool?.id}>{tool?.name}</option>;
+                  })}
+                </select>
+                <input type="date" {...register("date")} required />
                 <input
                   type="text"
-                  placeholder="Full Name"
-                  {...register("name")}
-                  required
-                />
-                <input
-                  type="email"
-                  placeholder="Email Address"
-                  {...register("email")}
+                  placeholder="cost"
+                  {...register("cost")}
                   required
                 />
               </div>
-              <div className="form-row">
-                <input
-                  type="tel"
-                  placeholder="Phone Number"
-                  {...register("phone")}
-                  required
-                />
-                <input
-                  type="text"
-                  placeholder="Type of Equipment"
-                  {...register("equipmentType")}
-                  required
-                />
-              </div>
-              <textarea
-                placeholder="Describe the equipment you want to donate..."
-                rows="4"
-                {...register("equipmentDescription")}
-                required
-              ></textarea>
-              <textarea
-                placeholder="Describe the condition of the equipment..."
-                rows="3"
-                {...register("equipmentCondition")}
-                required
-              ></textarea>
               <button type="submit" className="donate-button">
-                {t("Submit Donation")}
+                {loading == "pending" ? <ButtonLoading /> : t("Submit Donation")}
               </button>
               <p className="donation-note">
                 {t("Every donation makes a difference. Thank you!")}
