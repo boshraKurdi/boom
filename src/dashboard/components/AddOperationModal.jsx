@@ -14,6 +14,7 @@ const AddOperationModal = ({
   handleUpdate,
   input_value,
   media,
+  relationship_select,
   input_lang = [],
   relationship_input = [],
 }) => {
@@ -28,10 +29,11 @@ const AddOperationModal = ({
   } = useForm();
 
   const [relationships, setRelationships] = useState({});
+  const [selectedRelationships, setSelectedRelationships] = useState({});
 
   useEffect(() => {
     if (!isOpen) return;
-    
+
     reset();
 
     if (value) {
@@ -44,6 +46,13 @@ const AddOperationModal = ({
       input_date?.forEach((field) => {
         const val = value[field];
         if (val) setValue(field, val.slice(0, 10));
+      });
+      relationship_select?.forEach(({ label }) => {
+        const val = value?.[label] || [];
+        setSelectedRelationships((prev) => ({
+          ...prev,
+          [label]: val.map((v) => v.id),
+        }));
       });
 
       input_lang?.forEach((field) => {
@@ -124,6 +133,12 @@ const AddOperationModal = ({
           })
         );
       });
+      relationship_select?.forEach(({ label }) => {
+        formData.append(
+          label,
+          JSON.stringify(selectedRelationships[label] || [])
+        );
+      });
 
       select?.forEach((sel) => formData.append(sel.label, data[sel.label]));
       formData.append("media", data.media[0]);
@@ -145,6 +160,9 @@ const AddOperationModal = ({
       input?.forEach((field) => (plainData[field] = data[field]));
       input_value?.forEach((field) => (plainData[field.label] = field.value));
       input_date?.forEach((field) => (plainData[field] = data[field]));
+      relationship_select?.forEach(({ label }) => {
+        plainData[label] = selectedRelationships[label] || [];
+      });
 
       input_lang?.forEach((field) => {
         plainData[field] = JSON.stringify({
@@ -367,6 +385,49 @@ const AddOperationModal = ({
               >
                 + {t("Add")} {label}
               </button>
+            </div>
+          ))}
+          {relationship_select?.map(({ label, data }) => (
+            <div key={label} className="modal-field-dashboard">
+              <label>{label}</label>
+
+              <div className="checkbox-list">
+                {data.map((item) => {
+                  const isChecked = (
+                    selectedRelationships[label] || []
+                  ).includes(item.id);
+                  return (
+                    <label key={item.id} className="checkbox-item">
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={() => {
+                          setSelectedRelationships((prev) => {
+                            const prevSelected = prev[label] || [];
+                            const newSelected = isChecked
+                              ? prevSelected.filter((id) => id !== item.id) // إزالة
+                              : [...prevSelected, item.id]; // إضافة
+                            return { ...prev, [label]: newSelected };
+                          });
+                        }}
+                      />
+                      {item.name}
+                    </label>
+                  );
+                })}
+              </div>
+
+              {/* عرض الحملات المختارة بتنسيق جميل */}
+              <div className="selected-tags">
+                {(selectedRelationships[label] || []).map((id) => {
+                  const item = data.find((d) => d.id === id);
+                  return (
+                    <span key={id} className="selected-tag">
+                      {item?.name || id}
+                    </span>
+                  );
+                })}
+              </div>
             </div>
           ))}
 

@@ -22,6 +22,7 @@ const Home = lazy(() => import("../pages/Home")),
   DonateEquipment = lazy(() => import("../pages/DonateEquipment")),
   Report_dashboard = lazy(() => import("../dashboard/pages/reports/Operation")),
   Learns = lazy(() => import("../dashboard/pages/learns/Operation")),
+    Organizations = lazy(() => import("../dashboard/pages/organizations/Operation")),
   Units = lazy(() => import("../dashboard/pages/units/Operation")),
   Tools = lazy(() => import("../dashboard/pages/tools/Operation")),
   Donations = lazy(() => import("../dashboard/pages/donations/Operation")),
@@ -332,6 +333,14 @@ const router = createBrowserRouter([
             element: (
               <Suspense fallback={<LoadingScreen />}>
                 <Tools />
+              </Suspense>
+            ),
+          },
+           {
+            path: "organizations",
+            element: (
+              <Suspense fallback={<LoadingScreen />}>
+                <Organizations />
               </Suspense>
             ),
           },

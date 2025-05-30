@@ -22,6 +22,7 @@ const ActStore = createAsyncThunk(
       );
       return response.data.organization;
     } catch (error) {
+      console.log(error)
       if (axios.isAxiosError(error)) {
         return rejectWithValue(error.response?.data.message || error.message);
       } else {

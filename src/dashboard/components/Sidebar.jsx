@@ -136,6 +136,15 @@ function Sidebar() {
             >
               <Users size={18} /> {t("Teams")}
             </li>
+             <li
+              className={check === "organizations" ? "active" : ""}
+              onClick={() => {
+                nav("organizations");
+                setCheck("organizations");
+              }}
+            >
+              <Users size={18} /> {t("organizations")}
+            </li>
          
             </>
           )}

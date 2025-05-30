@@ -9,13 +9,12 @@ const ActUpdate = createAsyncThunk(
     try {
       const response = await axios.put(
         `http://localhost:8000/api/admin/locations/${id}`,
-        null,
+        data,
         {
           headers: {
             Authorization: "Bearer " + auth.token,
              "Accept-Language": i18next.language,
           },
-          params: data,
           signal: signal,
         }
       );

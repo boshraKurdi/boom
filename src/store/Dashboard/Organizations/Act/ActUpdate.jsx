@@ -9,17 +9,16 @@ const ActUpdate = createAsyncThunk(
     try {
       const response = await axios.put(
         `http://localhost:8000/api/admin/organizations/${id}`,
-        null,
+        data,
         {
           headers: {
             Authorization: "Bearer " + auth.token,
              "Accept-Language": i18next.language,
           },
-          params: data,
           signal: signal,
         }
       );
-      return response.data.organizations;
+      return response.data.organization;
     } catch (error) {
       if (axios.isAxiosError(error)) {
         return rejectWithValue(error.response?.data.message || error.message);

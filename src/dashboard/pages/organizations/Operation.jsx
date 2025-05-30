@@ -11,25 +11,19 @@ import {
   ActStore,
   ActUpdate,
   ActShow
-} from "../../../store/Dashboard/Compaigns/CompaignsSlice";
-import { ActIndex as ActIndexLoctions } from "../../../store/Dashboard/Locaions/LocationsSlice";
-import { ActIndex as ActIndexTeams } from "../../../store/Dashboard/Teams/TeamsSlice";
-import { ActIndex as ActIndexSteps } from "../../../store/Dashboard/Steps/StepsSlice";
+} from "../../../store/Dashboard/Organizations/OrganizationsSlice";
+import {ActIndex as ActIndexCompaings} from "../../../store/Dashboard/Compaigns/CompaignsSlice";
 import { useTranslation } from "react-i18next";
 export default function Operation() {
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(ActIndex());
-    dispatch(ActIndexLoctions());
-    dispatch(ActIndexTeams());
-    dispatch(ActIndexSteps());
+     dispatch(ActIndexCompaings());
   }, [dispatch]);
  const { t } = useTranslation();
-  const { data, loading } = useSelector((state) => state.compaigns);
-  const { data: locationsData } = useSelector((state) => state.locations);
-  const { data: teamsData } = useSelector((state) => state.teams);
-  const { data: stepsData } = useSelector((state) => state.steps);
+  const { data, loading } = useSelector((state) => state.organizations);
+    const { data: companingsData } = useSelector((state) => state.compaigns);
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
@@ -167,24 +161,16 @@ export default function Operation() {
       <div className="operations-table-dashboard">
         <div className="operations-header-dashboard">
           <span>ID</span>
-          <span>image</span>
           <span>Name</span>
           {/* <span>Description</span> */}
-          <span>Start Date</span>
-          {/* <span>End Date</span> */}
-          {/* <span>Article</span> */}
+        
           <span>Actions</span>
         </div>
         {filteredOperations.map((op) => (
           <OperationRowDashboard
             key={op.id}
             i_0={op.id}
-            i_image={op?.media ?? op?.media[0]?.original_url}
             i_1={op.name}
-            // i_2={op.description}
-            i_6={op.start_date}
-            // i_7={op.end_date}
-            // i_5={op.article}
             handleDelete={handleDelete}
             setIsModalOpen={() => {
               setSelectedOperation(op); // تعديل
@@ -198,8 +184,8 @@ export default function Operation() {
       <OperationDetailsModal
         isOpen={isDetailsOpen}
         onClose={() => setIsDetailsOpen(false)}
-        title={["name", "description", "end_date", "start_date", "article"]}
-        data={["location", "team", "step"]}
+        title={["name", "description"]}
+        data={['compaigns']}
         operation={selectedOperation}
       />
 
@@ -210,16 +196,12 @@ export default function Operation() {
         onClose={() => {
           setIsModalOpen(false);
           setSelectedOperation(null);
+         
         }}
         onSave={handleAddOperation}
-        media={true}
         value={selectedOperation}
-        relationship_input={[{label:"steps" , input:["name" , 'description']}]}
-        input={["name", "description", "end_date", "start_date", "article"]}
-        select={[
-          { label: "location_id", data: locationsData },
-          { label: "team_id", data: teamsData },
-        ]}
+        input_lang={["name", "description"]}
+        relationship_select={[{label:"compaigns" , data:companingsData}]}
       />
     </div>
   );
